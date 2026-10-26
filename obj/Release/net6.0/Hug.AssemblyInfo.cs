@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Hug")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+95b9e39ca2e1db1b1846c03c7ef906ee92b2e26c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2123c9d8d4777d46d61958ebcbc79777d7623fba")]
 [assembly: System.Reflection.AssemblyProductAttribute("Hug")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Hug")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
