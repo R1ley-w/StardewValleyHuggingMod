@@ -24,11 +24,11 @@ internal class ModEntry: Mod
     private void OnButtonPressed(object? s, ButtonPressedEventArgs e)
     {
         if (!Context.IsWorldReady || !Context.IsPlayerFree || e.Button != Config.HugKey)
-        {
-            myPressTick = Game1.ticks;
-            Helper.Multiplayer.SendMessage(true, "HugPress", modIDs : new[] { ModManifest.UniqueID });
-            TryHug();
-        }
+            return;
+
+        myPressTick = Game1.ticks;
+        Helper.Multiplayer.SendMessage(true, "HugPress", modIDs : new[] { ModManifest.UniqueID });
+        TryHug();
     }
 
     private void OnMessage (object? s, ModMessageReceivedEventArgs e)
@@ -50,7 +50,12 @@ internal class ModEntry: Mod
 
             Farmer? peer = Game1.GetPlayer(peerId, false);
             if (peer == null || peer.currentLocation != Game1.player.currentLocation) { continue; }
-            if (Vector2.Distance(peer.Tile, Game1.player.Tile) > 1f) { Game1.addHUDMessage(new HUDMessage("Too far away to hug!", HUDMessage.error_type)); }
+            if (Vector2.Distance(peer.Tile, Game1.player.Tile) > 1.5f)
+            {
+                Game1.addHUDMessage(new HUDMessage("Too far away to hug!", HUDMessage.error_type));
+                peerPressTick.Remove(peerId);
+                return;
+            }
             
             Game1.player.Stamina = Math.Min(Game1.player.MaxStamina, Game1.player.Stamina + Config.EnergyRestored);
             Game1.player.doEmote(20); //heart emote
