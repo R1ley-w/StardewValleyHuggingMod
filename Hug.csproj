@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.sdk">
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <AssemblyName>Hug</AssemblyName>
+        <RootNamespace>HuggingMod</RootNamespace>
+        <Nullable>enable</Nullable>
+        <LangVersion>latest</LangVersion>
+        <EnableModDeploy>true</EnableModDeploy>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Pathoschild.Stardew.ModBuildConfig" Version="4.*" />
+    </ItemGroup>
+</Project>

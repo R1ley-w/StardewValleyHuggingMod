@@ -1,7 +1,11 @@
 using System;
+using Microsoft.Xna.Framework;
+
 using System.Collections.Generic;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
+using StardewModdingAPI.Utilities;
+using StardewValley;
 
 internal class ModEntry: Mod
 {
@@ -19,15 +23,15 @@ internal class ModEntry: Mod
 
     private void OnButtonPressed(object? s, ButtonPressedEventArgs e)
     {
-        if (!Context.isWorldReady || !Context.isPlayerFree || e.Button != Config.HugKey)
+        if (!Context.IsWorldReady || !Context.IsPlayerFree || e.Button != Config.HugKey)
         {
-            myPressTicks = Game1.ticks;
-            Helper.MultiPlayer.sendMessage(true, "HugPress", modIDs : new[] { ModManifest.UniqueID });
+            myPressTick = Game1.ticks;
+            Helper.Multiplayer.SendMessage(true, "HugPress", modIDs : new[] { ModManifest.UniqueID });
             TryHug();
         }
     }
 
-    private void OnMessage (object? s, ModMessageReceivedMessageArgs m)
+    private void OnMessage (object? s, ModMessageReceivedEventArgs e)
     {
         if (e.FromModID != ModManifest.UniqueID || e.Type != "HugPress") {return;}
         peerPressTick[e.FromPlayerID] = Game1.ticks;
@@ -37,16 +41,16 @@ internal class ModEntry: Mod
     private void TryHug()
     {
         const int window = 120;
-        if (Game1.ticks - lastHugTick < CooldownTicks) return;
-        if (Game1.ticks - myPressTick) return;
+        if (Game1.ticks - this.lastHugTick < this.Config.CooldownTicks) return;
+        if (Game1.ticks - this.myPressTick > window) return;
 
         foreach (var (peerId, tick) in peerPressTick)
         {
             if (Game1.ticks - tick > window) { continue; }
 
-            Famer = peer = Game1.getFarmer(peerId);
+            Farmer? peer = Game1.GetPlayer(peerId, false);
             if (peer == null || peer.currentLocation != Game1.player.currentLocation) { continue; }
-            if (Vector2.Distance(peer.Tile, Game1.player.Tile) > 1.5f) { continue; }
+            if (Vector2.Distance(peer.Tile, Game1.player.Tile) > 1f) { Game1.addHUDMessage(new HUDMessage("Too far away to hug!", HUDMessage.error_type)); }
             
             Game1.player.Stamina = Math.Min(Game1.player.MaxStamina, Game1.player.Stamina + Config.EnergyRestored);
             Game1.player.doEmote(20); //heart emote
