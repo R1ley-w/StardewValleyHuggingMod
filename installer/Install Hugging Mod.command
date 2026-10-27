@@ -93,12 +93,34 @@ unzip -q "$TMP/mod.zip" -d "$TMP/unzipped" || fail "The downloaded file isn't a 
 SRC=$(dirname "$(find "$TMP/unzipped" -name manifest.json -not -path '*/__MACOSX/*' | head -n1)")
 [ -f "$SRC/manifest.json" ] || fail "Couldn't find the mod inside the download."
 
-# ---------- 4. Install (keep the player's config) ----------
+# ---------- 4. Remove old versions (keep the player's config) ----------
+MOD_ID=$(sed -n 's/.*"UniqueID"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' "$SRC/manifest.json" | head -n1)
+[ -n "$MOD_ID" ] || fail "The downloaded mod has no UniqueID in its manifest."
+
 DEST="$MODS_DIR/$MOD_FOLDER"
-if [ -f "$DEST/config.json" ]; then
-    cp "$DEST/config.json" "$TMP/config.json"
-    say "Keeping your existing settings (config.json)."
-fi
+# Prefer the config from the standard folder, otherwise take it from any old copy.
+[ -f "$DEST/config.json" ] && cp "$DEST/config.json" "$TMP/config.json"
+
+removed=0
+while IFS= read -r -d '' manifest; do
+    old_dir=$(dirname "$manifest")
+    # Safety: only ever delete folders inside Mods, never Mods itself.
+    case "$old_dir" in "$MODS_DIR"/?*) ;; *) continue ;; esac
+    if grep -qi "\"UniqueID\"[[:space:]]*:[[:space:]]*\"$MOD_ID\"" "$manifest"; then
+        if [ ! -f "$TMP/config.json" ] && [ -f "$old_dir/config.json" ]; then
+            cp "$old_dir/config.json" "$TMP/config.json"
+        fi
+        old_ver=$(sed -n 's/.*"Version"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' "$manifest" | head -n1)
+        say "Removing old version ${old_ver:-?}: ${old_dir#"$MODS_DIR"/}"
+        rm -rf "$old_dir"
+        removed=$((removed + 1))
+    fi
+done < <(find "$MODS_DIR" -mindepth 2 -maxdepth 4 -name manifest.json -print0 2>/dev/null)
+
+[ "$removed" -gt 0 ] || say "No old versions found."
+[ -f "$TMP/config.json" ] && say "Keeping your existing settings (config.json)."
+
+# ---------- 5. Install ----------
 rm -rf "$DEST"
 cp -R "$SRC" "$DEST"
 [ -f "$TMP/config.json" ] && cp "$TMP/config.json" "$DEST/config.json"
