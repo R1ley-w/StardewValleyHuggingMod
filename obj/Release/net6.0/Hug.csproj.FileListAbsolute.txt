@@ -1,9 +1,0 @@
-/Users/rileywade/Documents/Personal Projects/Mods/StardewValley/HuggingMod/StardewValleyHuggingMod/bin/Release/net6.0/Hug.deps.json
-/Users/rileywade/Documents/Personal Projects/Mods/StardewValley/HuggingMod/StardewValleyHuggingMod/bin/Release/net6.0/Hug.dll
-/Users/rileywade/Documents/Personal Projects/Mods/StardewValley/HuggingMod/StardewValleyHuggingMod/obj/Release/net6.0/Hug.csproj.AssemblyReference.cache
-/Users/rileywade/Documents/Personal Projects/Mods/StardewValley/HuggingMod/StardewValleyHuggingMod/obj/Release/net6.0/Hug.GeneratedMSBuildEditorConfig.editorconfig
-/Users/rileywade/Documents/Personal Projects/Mods/StardewValley/HuggingMod/StardewValleyHuggingMod/obj/Release/net6.0/Hug.AssemblyInfoInputs.cache
-/Users/rileywade/Documents/Personal Projects/Mods/StardewValley/HuggingMod/StardewValleyHuggingMod/obj/Release/net6.0/Hug.AssemblyInfo.cs
-/Users/rileywade/Documents/Personal Projects/Mods/StardewValley/HuggingMod/StardewValleyHuggingMod/obj/Release/net6.0/Hug.csproj.CoreCompileInputs.cache
-/Users/rileywade/Documents/Personal Projects/Mods/StardewValley/HuggingMod/StardewValleyHuggingMod/obj/Release/net6.0/Hug.sourcelink.json
-/Users/rileywade/Documents/Personal Projects/Mods/StardewValley/HuggingMod/StardewValleyHuggingMod/obj/Release/net6.0/Hug.dll
