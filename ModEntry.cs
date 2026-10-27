@@ -43,13 +43,23 @@ internal class ModEntry: Mod
     private void TryHug()
     {
         const int window = 120;
-        if (Game1.ticks - this.lastHugTick < this.Config.CooldownTicks) { Monitor.Log("[Hug] Still on cooldown.", LogLevel.Debug); return; }
-        if (Game1.ticks - this.myPressTick > window) { Monitor.Log("[Hug] Waiting for you to press the hug key too.", LogLevel.Debug); return; }
+        if (Game1.ticks - this.lastHugTick < this.Config.CooldownTicks) { 
+            Game1.addHUDMessage(new HUDMessage("just wait a second ravenous beast", HUDMessage.error_type));
+            Monitor.Log("[Hug] Still on cooldown.", LogLevel.Debug); return; 
+            }
+
+        if (Game1.ticks - this.myPressTick > window) {
+            Game1.addHUDMessage(new HUDMessage("other player wants a hug!", HUDMessage.health_type));
+             Monitor.Log("[Hug] Waiting for you to press the hug key too.", LogLevel.Debug); return; 
+             }
         if (peerPressTick.Count == 0) Monitor.Log("[Hug] No other player has pressed the hug key yet.", LogLevel.Debug);
 
         foreach (var (peerId, tick) in peerPressTick)
         {
-            if (Game1.ticks - tick > window) { Monitor.Log($"[Hug] Player {peerId}'s press was too long ago ({Game1.ticks - tick} ticks).", LogLevel.Debug); continue; }
+            if (Game1.ticks - tick > window) { 
+                Game1.addHUDMessage(new HUDMessage($"Player {peerId}'s press was too long ago", HUDMessage.error_type));
+                Monitor.Log($"[Hug] Player {peerId}'s press was too long ago ({Game1.ticks - tick} ticks).", LogLevel.Debug); continue; 
+                }
 
             Farmer? peer = Game1.GetPlayer(peerId, false);
             if (peer == null || peer.currentLocation != Game1.player.currentLocation) { Monitor.Log($"[Hug] Player {peerId} not found or not in your location.", LogLevel.Debug); continue; }
@@ -64,6 +74,7 @@ internal class ModEntry: Mod
             Game1.player.Stamina = Math.Min(Game1.player.MaxStamina, Game1.player.Stamina + Config.EnergyRestored);
             Game1.player.doEmote(20); //heart emote
             Game1.playSound("dwop");
+            Game1.addHUDMessage(new HUDMessage($"you and Player {peerId} hug!", HUDMessage.achievement_type));
             lastHugTick = Game1.ticks;
             peerPressTick.Remove(peerId);
             return;
